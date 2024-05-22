@@ -57,7 +57,6 @@ function getStorage(imageDir, imageUrl) {
     },
     filename: function (req, file, cb) {
       let mimeTypeOfSavedFile;
-      console.log('original name', file);
       if (imageMimeTypes.indexOf(removeNonLastDot(file.originalname).split('.')[1].toLowerCase()) != -1) {
         if (file.extensionName === '.svg+xml') {
           file.savedName = `${uniqid()}${'.svg'}`;

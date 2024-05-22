@@ -1,7 +1,7 @@
 const express = require('express');
 const { getAllConversations, createConversation, getConversationById, softDeleteConversation, updateConversation } = require('../controllers/conversationsController');
 const { validate } = require('../requests/validate');
-const { createConversationRules } = require('../requests/conversations');
+const { createConversationRules, updateConversationRules } = require('../requests/conversations');
 
 const conversationRouter = express.Router();
 
@@ -11,8 +11,13 @@ conversationRouter.post(
   createConversationRules(),
   validate, 
   createConversation);
-conversationRouter.get('/:id', getConversationById);
+conversationRouter.get('/:id',
+ getConversationById);
 conversationRouter.delete('/:id', softDeleteConversation);
-conversationRouter.patch('/:id', updateConversation);
+conversationRouter.patch(
+  '/:id',
+  updateConversationRules(),
+  validate, 
+  updateConversation);
 
 module.exports = conversationRouter;

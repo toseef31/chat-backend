@@ -1,13 +1,17 @@
-const { body } = require("express-validator");
+const { body, param } = require("express-validator");
 const Models = require("../../models");
 
 const createMessageRules = () => {
   return [
-    body("conversation_id")
-      .notEmpty()
-      .withMessage("Please send conversation detail")
-      .isInt()
-      .withMessage("Conversation ID must be an integer"),
+    body('sender_id')
+      .notEmpty().withMessage('Sender ID is required')
+      .isInt().withMessage('Sender ID must be an integer'),
+    body('conversation_id')
+      .notEmpty().withMessage('Conversation ID is required')
+      .isInt().withMessage('Conversation ID must be an integer'),
+    body('reply_of')
+      .optional()
+      .isInt().withMessage('Reply Of must be an integer'),
     body("content")
       .notEmpty()
       .withMessage("Please enter message or file")
@@ -20,35 +24,30 @@ const createMessageRules = () => {
       .withMessage('Invalid message type'),
   ];
 };
-const ResetPasswordRules = () => {
+const updateMessageRules = () => {
   return [
-    body("email")
+    param('id')
+      .isInt().withMessage('Message ID must be an integer'),
+    body('sender_id')
+      .optional()
+      .isInt().withMessage('Sender ID must be an integer'),
+    body('conversation_id')
+      .optional()
+      .isInt().withMessage('Conversation ID must be an integer'),
+    body("content")
       .notEmpty()
-      .withMessage("Please enter email address")
-      .exists()
-      .trim()
-      .toLowerCase()
+      .withMessage("Please enter message or file")
       .isString()
-      .withMessage("Please enter valid email address")
-      .custom((val) => {
-        return Models.User.findOne({ email: val }).then((resp) => {
-          if (!resp)
-            return Promise.reject("Account with this email does not exist");
-        });
-      }),
-
-    body("password")
+      .withMessage("Content field must be a string"),
+    body("type")
       .notEmpty()
-      .withMessage("Please enter new password")
-      .exists()
-      .trim()
-      .toLowerCase()
-      .isString()
-      .withMessage("Please enter valid new password"),
+      .withMessage("Please send valid message type")
+      .isIn(['text', 'audio', 'video', 'image', 'file'])
+      .withMessage('Invalid message type'),
   ];
 };
 
 module.exports = {
   createMessageRules,
-  ResetPasswordRules,
+  updateMessageRules,
 };

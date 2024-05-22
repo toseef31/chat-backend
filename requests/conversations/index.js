@@ -17,60 +17,20 @@ const createConversationRules = () => {
   ];
 };
 
-const RegistrationRules = () => {
+const updateConversationRules = () => {
   return [
-    body('first_name')
-      .notEmpty()
-      .withMessage('Please enter first name')
-      .exists()
-      .trim()
-      .toLowerCase()
+    body('title')
+      .optional()
       .isString()
-      .withMessage('Please enter valid first name'),
-
-    body('last_name')
-      .notEmpty()
-      .withMessage('Please enter last name')
-      .exists()
-      .trim()
-      .toLowerCase()
+      .withMessage('Title must be a string'),
+    body('status')
+      .optional()
       .isString()
-      .withMessage('Please enter valid last name'),
-
-    body('email')
-      .notEmpty()
-      .withMessage('Please enter email address')
-      .exists()
-      .trim()
-      .toLowerCase()
-      .isString()
-      .withMessage('Please enter valid email address')
-      .custom((val) => {
-        return Models.Admin.findOne({ email: val }).then((resp) => {
-          if (resp) return Promise.reject('Account already exist with this email, kindly try another email');
-        });
-      }),
-
-    body('password')
-      .notEmpty()
-      .withMessage('Please enter password')
-      .exists()
-      .trim()
-      .toLowerCase()
-      .isString()
-      .withMessage('Please enter valid password'),
-
-    body('phone_number')
-      .notEmpty()
-      .withMessage('Please enter phone number')
-      .exists()
-      .trim()
-      .toLowerCase()
-      .isString()
-      .withMessage('Please enter valid phone number'),
+      .isIn(['active', 'archived', 'starred'])
+      .withMessage('Invalid status')
   ];
 };
 module.exports = {
   createConversationRules,
-  RegistrationRules,
+  updateConversationRules,
 };
